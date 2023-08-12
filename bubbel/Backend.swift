@@ -3566,7 +3566,6 @@ func bubbelApiCreateUser(req: InCreateUser) async throws -> ResCreateUser {
             let (dataString) = String(data: data, encoding: .utf8) ?? ""
             
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let result = try decoder.decode(ResCreateUser.self, from: data)
             return result
         }
@@ -3583,7 +3582,6 @@ func bubbelApiAuthUser(req: InAuthUser) async throws -> ResAuthUser {
             let (dataString) = String(data: data, encoding: .utf8) ?? ""
             
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let result = try decoder.decode(ResAuthUser.self, from: data)
             return result
         }
@@ -3600,7 +3598,6 @@ func bubbelApiDeauthUser(req: InDeauthUser) async throws -> ResDeauthUser {
             let (dataString) = String(data: data, encoding: .utf8) ?? ""
             
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let result = try decoder.decode(ResDeauthUser.self, from: data)
             return result
         }
@@ -3617,7 +3614,6 @@ func bubbelApiVerifyAccount(req: InVerifyAccount) async throws -> ResVerifyAccou
             let (dataString) = String(data: data, encoding: .utf8) ?? ""
             
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let result = try decoder.decode(ResVerifyAccount.self, from: data)
             return result
         }
@@ -3634,7 +3630,6 @@ func bubbelApiSendVerify(req: InSendVerify) async throws -> ResSendVerify {
             let (dataString) = String(data: data, encoding: .utf8) ?? ""
             
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let result = try decoder.decode(ResSendVerify.self, from: data)
             return result
         }
@@ -3651,7 +3646,6 @@ func bubbelApiSetUserProfile(req: InSetUserProfile) async throws -> ResSetUserPr
             let (dataString) = String(data: data, encoding: .utf8) ?? ""
             
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let result = try decoder.decode(ResSetUserProfile.self, from: data)
             return result
         }
@@ -3668,7 +3662,6 @@ func bubbelApiGetUserProfile(req: InGetUserProfile) async throws -> ResGetUserPr
             let (dataString) = String(data: data, encoding: .utf8) ?? ""
             
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let result = try decoder.decode(ResGetUserProfile.self, from: data)
             return result
         }
@@ -3685,7 +3678,6 @@ func bubbelApiDeleteUser(req: InDeleteUser) async throws -> ResDeleteUser {
             let (dataString) = String(data: data, encoding: .utf8) ?? ""
             
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let result = try decoder.decode(ResDeleteUser.self, from: data)
             return result
         }
@@ -3702,7 +3694,6 @@ func bubbelApiCreateClub(req: InCreateClub) async throws -> ResCreateClub {
             let (dataString) = String(data: data, encoding: .utf8) ?? ""
             
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let result = try decoder.decode(ResCreateClub.self, from: data)
             return result
         }
@@ -3719,7 +3710,6 @@ func bubbelApiGetClubProfile(req: InGetClubProfile) async throws -> ResGetClubPr
             let (dataString) = String(data: data, encoding: .utf8) ?? ""
             
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let result = try decoder.decode(ResGetClubProfile.self, from: data)
             return result
         }
@@ -3736,7 +3726,6 @@ func bubbelApiSetClubProfile(req: InSetClubProfile) async throws -> ResSetClubPr
             let (dataString) = String(data: data, encoding: .utf8) ?? ""
             
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let result = try decoder.decode(ResSetClubProfile.self, from: data)
             return result
         }
@@ -3753,7 +3742,6 @@ func bubbelApiDeleteClub(req: InDeleteClub) async throws -> ResDeleteClub {
             let (dataString) = String(data: data, encoding: .utf8) ?? ""
             
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let result = try decoder.decode(ResDeleteClub.self, from: data)
             return result
         }
@@ -3770,7 +3758,6 @@ func bubbelApiGetUserProfileWithUsername(req: InGetUserProfileWithUsername) asyn
             let (dataString) = String(data: data, encoding: .utf8) ?? ""
             
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let result = try decoder.decode(ResGetUserProfileWithUsername.self, from: data)
             return result
         }
@@ -3787,7 +3774,6 @@ func bubbelApiAddFriendConnection(req: InAddFriendConnection) async throws -> Re
             let (dataString) = String(data: data, encoding: .utf8) ?? ""
             
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let result = try decoder.decode(ResAddFriendConnection.self, from: data)
             return result
         }
@@ -3804,7 +3790,6 @@ func bubbelApiGetFriendConnections(req: InGetFriendConnections) async throws -> 
             let (dataString) = String(data: data, encoding: .utf8) ?? ""
             
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let result = try decoder.decode(ResGetFriendConnections.self, from: data)
             return result
         }
@@ -3821,7 +3806,6 @@ func bubbelApiRemoveFriend(req: InRemoveFriend) async throws -> ResRemoveFriend 
             let (dataString) = String(data: data, encoding: .utf8) ?? ""
             
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let result = try decoder.decode(ResRemoveFriend.self, from: data)
             return result
         }
@@ -3838,7 +3822,6 @@ func bubbelApiJoinClub(req: InJoinClub) async throws -> ResJoinClub {
             let (dataString) = String(data: data, encoding: .utf8) ?? ""
             
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let result = try decoder.decode(ResJoinClub.self, from: data)
             return result
         }
@@ -3855,7 +3838,6 @@ func bubbelApiUnjoinClub(req: InUnjoinClub) async throws -> ResUnjoinClub {
             let (dataString) = String(data: data, encoding: .utf8) ?? ""
             
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let result = try decoder.decode(ResUnjoinClub.self, from: data)
             return result
         }
@@ -3872,7 +3854,6 @@ func bubbelApiGetClubMembers(req: InGetClubMembers) async throws -> ResGetClubMe
             let (dataString) = String(data: data, encoding: .utf8) ?? ""
             
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let result = try decoder.decode(ResGetClubMembers.self, from: data)
             return result
         }
@@ -3889,7 +3870,6 @@ func bubbelApiGetUserClubs(req: InGetUserClubs) async throws -> ResGetUserClubs 
             let (dataString) = String(data: data, encoding: .utf8) ?? ""
             
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let result = try decoder.decode(ResGetUserClubs.self, from: data)
             return result
         }
