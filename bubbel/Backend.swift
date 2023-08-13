@@ -1408,6 +1408,7 @@ enum IndigoType: String, Codable {
     case clubNotFound = "ClubNotFound"
     case noAuth = "NoAuth"
     case noAuthOwner = "NoAuthOwner"
+    case settingNameNotSupportedYet = "SettingNameNotSupportedYet"
     case settingOwnerNotSupportedYet = "SettingOwnerNotSupportedYet"
     case typeInternal = "Internal"
 }
