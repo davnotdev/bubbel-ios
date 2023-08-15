@@ -47,6 +47,8 @@ struct BubbelCodegenOut: Codable {
     let t41: ResRegexSearchClubs?
     let t42: InRegexSearchUsers?
     let t43: ResRegexSearchUsers?
+    let t44: [String: JSONAny]?
+    let t45: ResGetRandomClubs?
     let t5: ResDeauthUser?
     let t6: InVerifyAccount?
     let t7: ResVerifyAccount?
@@ -112,6 +114,8 @@ extension BubbelCodegenOut {
         t41: ResRegexSearchClubs?? = nil,
         t42: InRegexSearchUsers?? = nil,
         t43: ResRegexSearchUsers?? = nil,
+        t44: [String: JSONAny]?? = nil,
+        t45: ResGetRandomClubs?? = nil,
         t5: ResDeauthUser?? = nil,
         t6: InVerifyAccount?? = nil,
         t7: ResVerifyAccount?? = nil,
@@ -158,6 +162,8 @@ extension BubbelCodegenOut {
             t41: t41 ?? self.t41,
             t42: t42 ?? self.t42,
             t43: t43 ?? self.t43,
+            t44: t44 ?? self.t44,
+            t45: t45 ?? self.t45,
             t5: t5 ?? self.t5,
             t6: t6 ?? self.t6,
             t7: t7 ?? self.t7,
@@ -3135,7 +3141,7 @@ enum FriskyType: String, Codable {
 
 // MARK: - RegexSearchClubsOut
 struct RegexSearchClubsOut: Codable {
-    let clubs: [[Club]]
+    let clubs: [[UserElement]]
 }
 
 // MARK: RegexSearchClubsOut convenience initializers and mutators
@@ -3157,7 +3163,7 @@ extension RegexSearchClubsOut {
     }
 
     func with(
-        clubs: [[Club]]? = nil
+        clubs: [[UserElement]]? = nil
     ) -> RegexSearchClubsOut {
         return RegexSearchClubsOut(
             clubs: clubs ?? self.clubs
@@ -3173,7 +3179,7 @@ extension RegexSearchClubsOut {
     }
 }
 
-enum Club: Codable {
+enum UserElement: Codable {
     case integer(Int)
     case string(String)
 
@@ -3187,7 +3193,7 @@ enum Club: Codable {
             self = .string(x)
             return
         }
-        throw DecodingError.typeMismatch(Club.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for Club"))
+        throw DecodingError.typeMismatch(UserElement.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for UserElement"))
     }
 
     func encode(to encoder: Encoder) throws {
@@ -3337,7 +3343,7 @@ extension RegexSearchUsersError {
 
 // MARK: - RegexSearchUsersOut
 struct RegexSearchUsersOut: Codable {
-    let users: [[Club]]
+    let users: [[UserElement]]
 }
 
 // MARK: RegexSearchUsersOut convenience initializers and mutators
@@ -3359,10 +3365,223 @@ extension RegexSearchUsersOut {
     }
 
     func with(
-        users: [[Club]]? = nil
+        users: [[UserElement]]? = nil
     ) -> RegexSearchUsersOut {
         return RegexSearchUsersOut(
             users: users ?? self.users
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - ResGetRandomClubs
+struct ResGetRandomClubs: Codable {
+    let error: GetRandomClubsError?
+    let res: GetRandomClubsOut?
+}
+
+// MARK: ResGetRandomClubs convenience initializers and mutators
+
+extension ResGetRandomClubs {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(ResGetRandomClubs.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        error: GetRandomClubsError?? = nil,
+        res: GetRandomClubsOut?? = nil
+    ) -> ResGetRandomClubs {
+        return ResGetRandomClubs(
+            error: error ?? self.error,
+            res: res ?? self.res
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - GetRandomClubsError
+struct GetRandomClubsError: Codable {
+    let ierror: String
+    let type: GetClubMembersErrorType
+}
+
+// MARK: GetRandomClubsError convenience initializers and mutators
+
+extension GetRandomClubsError {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(GetRandomClubsError.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        ierror: String? = nil,
+        type: GetClubMembersErrorType? = nil
+    ) -> GetRandomClubsError {
+        return GetRandomClubsError(
+            ierror: ierror ?? self.ierror,
+            type: type ?? self.type
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - GetRandomClubsOut
+struct GetRandomClubsOut: Codable {
+    let clubs: [[GetRandomClubsOutClub]]
+}
+
+// MARK: GetRandomClubsOut convenience initializers and mutators
+
+extension GetRandomClubsOut {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(GetRandomClubsOut.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        clubs: [[GetRandomClubsOutClub]]? = nil
+    ) -> GetRandomClubsOut {
+        return GetRandomClubsOut(
+            clubs: clubs ?? self.clubs
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+enum GetRandomClubsOutClub: Codable {
+    case clubProfile(ClubProfile)
+    case integer(Int)
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if let x = try? container.decode(Int.self) {
+            self = .integer(x)
+            return
+        }
+        if let x = try? container.decode(ClubProfile.self) {
+            self = .clubProfile(x)
+            return
+        }
+        throw DecodingError.typeMismatch(GetRandomClubsOutClub.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for GetRandomClubsOutClub"))
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        switch self {
+        case .clubProfile(let x):
+            try container.encode(x)
+        case .integer(let x):
+            try container.encode(x)
+        }
+    }
+}
+
+// MARK: - ClubProfile
+struct ClubProfile: Codable {
+    let banner, description, displayName: String?
+    let name: String
+    let owner: Int
+    let pfp: String?
+
+    enum CodingKeys: String, CodingKey {
+        case banner, description
+        case displayName = "display_name"
+        case name, owner, pfp
+    }
+}
+
+// MARK: ClubProfile convenience initializers and mutators
+
+extension ClubProfile {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(ClubProfile.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        banner: String?? = nil,
+        description: String?? = nil,
+        displayName: String?? = nil,
+        name: String? = nil,
+        owner: Int? = nil,
+        pfp: String?? = nil
+    ) -> ClubProfile {
+        return ClubProfile(
+            banner: banner ?? self.banner,
+            description: description ?? self.description,
+            displayName: displayName ?? self.displayName,
+            name: name ?? self.name,
+            owner: owner ?? self.owner,
+            pfp: pfp ?? self.pfp
         )
     }
 
@@ -4297,5 +4516,21 @@ func bubbelApiRegexSearchUsers(req: InRegexSearchUsers) async throws -> ResRegex
             
             let decoder = JSONDecoder()
             let result = try decoder.decode(ResRegexSearchUsers.self, from: data)
+            return result
+        }
+func bubbelApiGetRandomClubs(req: InGetRandomClubs) async throws -> ResGetRandomClubs {
+            let json = try req.jsonData()
+            
+            let url = URL(string: bubbelBathDev + "/api/get_random_clubs")!
+            var urlRequest = URLRequest(url: url)
+            urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpMethod = "POST"
+            urlRequest.httpBody = json
+            
+            let (data, response) = try await URLSession.shared.data(for: urlRequest)
+            let (dataString) = String(data: data, encoding: .utf8) ?? ""
+            
+            let decoder = JSONDecoder()
+            let result = try decoder.decode(ResGetRandomClubs.self, from: data)
             return result
         }
