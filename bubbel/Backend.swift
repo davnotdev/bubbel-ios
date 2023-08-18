@@ -51,6 +51,8 @@ struct BubbelCodegenOut: Codable {
     let t45: ResGetRandomClubs?
     let t46: InCheckToken?
     let t47: ResCheckToken?
+    let t48: InUnsafeAddFile?
+    let t49: ResUnsafeAddFile?
     let t5: ResDeauthUser?
     let t6: InVerifyAccount?
     let t7: ResVerifyAccount?
@@ -120,6 +122,8 @@ extension BubbelCodegenOut {
         t45: ResGetRandomClubs?? = nil,
         t46: InCheckToken?? = nil,
         t47: ResCheckToken?? = nil,
+        t48: InUnsafeAddFile?? = nil,
+        t49: ResUnsafeAddFile?? = nil,
         t5: ResDeauthUser?? = nil,
         t6: InVerifyAccount?? = nil,
         t7: ResVerifyAccount?? = nil,
@@ -170,6 +174,8 @@ extension BubbelCodegenOut {
             t45: t45 ?? self.t45,
             t46: t46 ?? self.t46,
             t47: t47 ?? self.t47,
+            t48: t48 ?? self.t48,
+            t49: t49 ?? self.t49,
             t5: t5 ?? self.t5,
             t6: t6 ?? self.t6,
             t7: t7 ?? self.t7,
@@ -3830,6 +3836,183 @@ extension CheckTokenOut {
     }
 }
 
+// MARK: - InUnsafeAddFile
+struct InUnsafeAddFile: Codable {
+    let data, inUnsafeAddFileExtension: String
+
+    enum CodingKeys: String, CodingKey {
+        case data
+        case inUnsafeAddFileExtension = "extension"
+    }
+}
+
+// MARK: InUnsafeAddFile convenience initializers and mutators
+
+extension InUnsafeAddFile {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(InUnsafeAddFile.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        data: String? = nil,
+        inUnsafeAddFileExtension: String? = nil
+    ) -> InUnsafeAddFile {
+        return InUnsafeAddFile(
+            data: data ?? self.data,
+            inUnsafeAddFileExtension: inUnsafeAddFileExtension ?? self.inUnsafeAddFileExtension
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - ResUnsafeAddFile
+struct ResUnsafeAddFile: Codable {
+    let error: UnsafeAddFileError?
+    let res: UnsafeAddFileOut?
+}
+
+// MARK: ResUnsafeAddFile convenience initializers and mutators
+
+extension ResUnsafeAddFile {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(ResUnsafeAddFile.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        error: UnsafeAddFileError?? = nil,
+        res: UnsafeAddFileOut?? = nil
+    ) -> ResUnsafeAddFile {
+        return ResUnsafeAddFile(
+            error: error ?? self.error,
+            res: res ?? self.res
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - UnsafeAddFileError
+struct UnsafeAddFileError: Codable {
+    let ierror: String
+    let type: GetClubMembersErrorType
+}
+
+// MARK: UnsafeAddFileError convenience initializers and mutators
+
+extension UnsafeAddFileError {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(UnsafeAddFileError.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        ierror: String? = nil,
+        type: GetClubMembersErrorType? = nil
+    ) -> UnsafeAddFileError {
+        return UnsafeAddFileError(
+            ierror: ierror ?? self.ierror,
+            type: type ?? self.type
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - UnsafeAddFileOut
+struct UnsafeAddFileOut: Codable {
+    let fileLink: String
+
+    enum CodingKeys: String, CodingKey {
+        case fileLink = "file_link"
+    }
+}
+
+// MARK: UnsafeAddFileOut convenience initializers and mutators
+
+extension UnsafeAddFileOut {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(UnsafeAddFileOut.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        fileLink: String? = nil
+    ) -> UnsafeAddFileOut {
+        return UnsafeAddFileOut(
+            fileLink: fileLink ?? self.fileLink
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
 // MARK: - ResDeauthUser
 struct ResDeauthUser: Codable {
     let error, res: JSONNull?
@@ -4784,5 +4967,21 @@ func bubbelApiCheckToken(req: InCheckToken) async throws -> ResCheckToken {
             
             let decoder = JSONDecoder()
             let result = try decoder.decode(ResCheckToken.self, from: data)
+            return result
+        }
+func bubbelApiUnsafeAddFile(req: InUnsafeAddFile) async throws -> ResUnsafeAddFile {
+            let json = try req.jsonData()
+            
+            let url = URL(string: bubbelBathDev + "/api/unsafe_add_file")!
+            var urlRequest = URLRequest(url: url)
+            urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpMethod = "POST"
+            urlRequest.httpBody = json
+            
+            let (data, response) = try await URLSession.shared.data(for: urlRequest)
+            let (dataString) = String(data: data, encoding: .utf8) ?? ""
+            
+            let decoder = JSONDecoder()
+            let result = try decoder.decode(ResUnsafeAddFile.self, from: data)
             return result
         }
