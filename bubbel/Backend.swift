@@ -54,10 +54,12 @@ struct BubbelCodegenOut: Codable {
     let t48: InUnsafeAddFile?
     let t49: ResUnsafeAddFile?
     let t5: ResDeauthUser?
-    let t50: DataChannelInitRequest?
-    let t51: DataChannelInitResponse?
-    let t52: DataChannelRequest?
-    let t53: DataChannelResponse?
+    let t50: InGetDataChannelChunk?
+    let t51: ResGetDataChannelChunk?
+    let t52: DataChannelInitRequest?
+    let t53: DataChannelInitResponse?
+    let t54: DataChannelRequest?
+    let t55: DataChannelResponse?
     let t6: InVerifyAccount?
     let t7: ResVerifyAccount?
     let t8: InSendVerify?
@@ -129,10 +131,12 @@ extension BubbelCodegenOut {
         t48: InUnsafeAddFile?? = nil,
         t49: ResUnsafeAddFile?? = nil,
         t5: ResDeauthUser?? = nil,
-        t50: DataChannelInitRequest?? = nil,
-        t51: DataChannelInitResponse?? = nil,
-        t52: DataChannelRequest?? = nil,
-        t53: DataChannelResponse?? = nil,
+        t50: InGetDataChannelChunk?? = nil,
+        t51: ResGetDataChannelChunk?? = nil,
+        t52: DataChannelInitRequest?? = nil,
+        t53: DataChannelInitResponse?? = nil,
+        t54: DataChannelRequest?? = nil,
+        t55: DataChannelResponse?? = nil,
         t6: InVerifyAccount?? = nil,
         t7: ResVerifyAccount?? = nil,
         t8: InSendVerify?? = nil,
@@ -189,6 +193,8 @@ extension BubbelCodegenOut {
             t51: t51 ?? self.t51,
             t52: t52 ?? self.t52,
             t53: t53 ?? self.t53,
+            t54: t54 ?? self.t54,
+            t55: t55 ?? self.t55,
             t6: t6 ?? self.t6,
             t7: t7 ?? self.t7,
             t8: t8 ?? self.t8,
@@ -4084,6 +4090,334 @@ extension ResDeauthUser {
     }
 }
 
+// MARK: - InGetDataChannelChunk
+struct InGetDataChannelChunk: Codable {
+    let channelID: Int
+    let chunkIndex: Int
+    let token: String
+
+    enum CodingKeys: String, CodingKey {
+        case channelID = "channel_id"
+        case chunkIndex = "chunk_index"
+        case token
+    }
+}
+
+// MARK: InGetDataChannelChunk convenience initializers and mutators
+
+extension InGetDataChannelChunk {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(InGetDataChannelChunk.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        channelID: Int? = nil,
+        chunkIndex: Int? = nil,
+        token: String? = nil
+    ) -> InGetDataChannelChunk {
+        return InGetDataChannelChunk(
+            channelID: channelID ?? self.channelID,
+            chunkIndex: chunkIndex ?? self.chunkIndex,
+            token: token ?? self.token
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - ResGetDataChannelChunk
+struct ResGetDataChannelChunk: Codable {
+    let error: GetDataChannelChunkError?
+    let res: GetDataChannelChunkOut?
+}
+
+// MARK: ResGetDataChannelChunk convenience initializers and mutators
+
+extension ResGetDataChannelChunk {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(ResGetDataChannelChunk.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        error: GetDataChannelChunkError?? = nil,
+        res: GetDataChannelChunkOut?? = nil
+    ) -> ResGetDataChannelChunk {
+        return ResGetDataChannelChunk(
+            error: error ?? self.error,
+            res: res ?? self.res
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - GetDataChannelChunkError
+struct GetDataChannelChunkError: Codable {
+    let type: BraggadociousType
+    let ierror: String?
+}
+
+// MARK: GetDataChannelChunkError convenience initializers and mutators
+
+extension GetDataChannelChunkError {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(GetDataChannelChunkError.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        type: BraggadociousType? = nil,
+        ierror: String?? = nil
+    ) -> GetDataChannelChunkError {
+        return GetDataChannelChunkError(
+            type: type ?? self.type,
+            ierror: ierror ?? self.ierror
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+enum BraggadociousType: String, Codable {
+    case channelNotFound = "ChannelNotFound"
+    case chunkNotFound = "ChunkNotFound"
+    case noAuth = "NoAuth"
+    case typeInternal = "Internal"
+}
+
+// MARK: - GetDataChannelChunkOut
+struct GetDataChannelChunkOut: Codable {
+    let chunk: DataChunk
+}
+
+// MARK: GetDataChannelChunkOut convenience initializers and mutators
+
+extension GetDataChannelChunkOut {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(GetDataChannelChunkOut.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        chunk: DataChunk? = nil
+    ) -> GetDataChannelChunkOut {
+        return GetDataChannelChunkOut(
+            chunk: chunk ?? self.chunk
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - DataChunk
+struct DataChunk: Codable {
+    let items: [DataChannelItem?]
+}
+
+// MARK: DataChunk convenience initializers and mutators
+
+extension DataChunk {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(DataChunk.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        items: [DataChannelItem?]? = nil
+    ) -> DataChunk {
+        return DataChunk(
+            items: items ?? self.items
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - DataChannelItem
+struct DataChannelItem: Codable {
+    let editTime: Int?
+    let message: Message
+    let postTime: Int
+    let sender: Int
+
+    enum CodingKeys: String, CodingKey {
+        case editTime = "edit_time"
+        case message
+        case postTime = "post_time"
+        case sender
+    }
+}
+
+// MARK: DataChannelItem convenience initializers and mutators
+
+extension DataChannelItem {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(DataChannelItem.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        editTime: Int?? = nil,
+        message: Message? = nil,
+        postTime: Int? = nil,
+        sender: Int? = nil
+    ) -> DataChannelItem {
+        return DataChannelItem(
+            editTime: editTime ?? self.editTime,
+            message: message ?? self.message,
+            postTime: postTime ?? self.postTime,
+            sender: sender ?? self.sender
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - Message
+struct Message: Codable {
+    let text: String
+    let type: MessageType
+}
+
+// MARK: Message convenience initializers and mutators
+
+extension Message {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(Message.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        text: String? = nil,
+        type: MessageType? = nil
+    ) -> Message {
+        return Message(
+            text: text ?? self.text,
+            type: type ?? self.type
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+enum MessageType: String, Codable {
+    case text = "Text"
+}
+
 // MARK: - DataChannelInitRequest
 struct DataChannelInitRequest: Codable {
     let channel: Int
@@ -4177,7 +4511,7 @@ extension DataChannelInitResponse {
 
 // MARK: - DataChannelInitError
 struct DataChannelInitError: Codable {
-    let type: BraggadociousType
+    let type: Type1
     let ierror: String?
 }
 
@@ -4200,7 +4534,7 @@ extension DataChannelInitError {
     }
 
     func with(
-        type: BraggadociousType? = nil,
+        type: Type1? = nil,
         ierror: String?? = nil
     ) -> DataChannelInitError {
         return DataChannelInitError(
@@ -4218,7 +4552,7 @@ extension DataChannelInitError {
     }
 }
 
-enum BraggadociousType: String, Codable {
+enum Type1: String, Codable {
     case channelNotFound = "ChannelNotFound"
     case noAuth = "NoAuth"
     case typeInternal = "Internal"
@@ -4315,53 +4649,6 @@ extension DataChannelCommandType {
     }
 }
 
-// MARK: - Message
-struct Message: Codable {
-    let text: String
-    let type: MessageType
-}
-
-// MARK: Message convenience initializers and mutators
-
-extension Message {
-    init(data: Data) throws {
-        self = try newJSONDecoder().decode(Message.self, from: data)
-    }
-
-    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
-        guard let data = json.data(using: encoding) else {
-            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
-        }
-        try self.init(data: data)
-    }
-
-    init(fromURL url: URL) throws {
-        try self.init(data: try Data(contentsOf: url))
-    }
-
-    func with(
-        text: String? = nil,
-        type: MessageType? = nil
-    ) -> Message {
-        return Message(
-            text: text ?? self.text,
-            type: type ?? self.type
-        )
-    }
-
-    func jsonData() throws -> Data {
-        return try newJSONEncoder().encode(self)
-    }
-
-    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
-        return String(data: try self.jsonData(), encoding: encoding)
-    }
-}
-
-enum MessageType: String, Codable {
-    case text = "Text"
-}
-
 enum DataChannelCommandTypeType: String, Codable {
     case delete = "Delete"
     case send = "Send"
@@ -4412,7 +4699,7 @@ extension DataChannelResponse {
 
 // MARK: - DataChannelError
 struct DataChannelError: Codable {
-    let type: BraggadociousType
+    let type: Type1
     let ierror: String?
 }
 
@@ -4435,7 +4722,7 @@ extension DataChannelError {
     }
 
     func with(
-        type: BraggadociousType? = nil,
+        type: Type1? = nil,
         ierror: String?? = nil
     ) -> DataChannelError {
         return DataChannelError(
@@ -4484,62 +4771,6 @@ extension DataChannelResponseType {
         return DataChannelResponseType(
             item: item ?? self.item,
             type: type ?? self.type
-        )
-    }
-
-    func jsonData() throws -> Data {
-        return try newJSONEncoder().encode(self)
-    }
-
-    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
-        return String(data: try self.jsonData(), encoding: encoding)
-    }
-}
-
-// MARK: - DataChannelItem
-struct DataChannelItem: Codable {
-    let editTime: Int?
-    let message: Message
-    let postTime: Int
-    let sender: Int
-
-    enum CodingKeys: String, CodingKey {
-        case editTime = "edit_time"
-        case message
-        case postTime = "post_time"
-        case sender
-    }
-}
-
-// MARK: DataChannelItem convenience initializers and mutators
-
-extension DataChannelItem {
-    init(data: Data) throws {
-        self = try newJSONDecoder().decode(DataChannelItem.self, from: data)
-    }
-
-    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
-        guard let data = json.data(using: encoding) else {
-            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
-        }
-        try self.init(data: data)
-    }
-
-    init(fromURL url: URL) throws {
-        try self.init(data: try Data(contentsOf: url))
-    }
-
-    func with(
-        editTime: Int?? = nil,
-        message: Message? = nil,
-        postTime: Int? = nil,
-        sender: Int? = nil
-    ) -> DataChannelItem {
-        return DataChannelItem(
-            editTime: editTime ?? self.editTime,
-            message: message ?? self.message,
-            postTime: postTime ?? self.postTime,
-            sender: sender ?? self.sender
         )
     }
 
@@ -4642,7 +4873,7 @@ extension ResVerifyAccount {
 /// My favorite error message.
 // MARK: - VerifyAccountError
 struct VerifyAccountError: Codable {
-    let type: Type1
+    let type: Type2
     let ierror: String?
 }
 
@@ -4665,7 +4896,7 @@ extension VerifyAccountError {
     }
 
     func with(
-        type: Type1? = nil,
+        type: Type2? = nil,
         ierror: String?? = nil
     ) -> VerifyAccountError {
         return VerifyAccountError(
@@ -4683,7 +4914,7 @@ extension VerifyAccountError {
     }
 }
 
-enum Type1: String, Codable {
+enum Type2: String, Codable {
     case codeTimedOutOrAlreadyVerifiedOrInvalidCode = "CodeTimedOutOrAlreadyVerifiedOrInvalidCode"
     case typeInternal = "Internal"
 }
@@ -4778,7 +5009,7 @@ extension ResSendVerify {
 /// Failed to send the verification message (usually an email error).
 // MARK: - SendVerifyError
 struct SendVerifyError: Codable {
-    let type: Type2
+    let type: Type3
     let ierror: String?
 }
 
@@ -4801,7 +5032,7 @@ extension SendVerifyError {
     }
 
     func with(
-        type: Type2? = nil,
+        type: Type3? = nil,
         ierror: String?? = nil
     ) -> SendVerifyError {
         return SendVerifyError(
@@ -4819,7 +5050,7 @@ extension SendVerifyError {
     }
 }
 
-enum Type2: String, Codable {
+enum Type3: String, Codable {
     case resendTooSoon = "ResendTooSoon"
     case sendVerification = "SendVerification"
     case typeInternal = "Internal"
@@ -5484,5 +5715,21 @@ func bubbelApiUnsafeAddFile(req: InUnsafeAddFile) async throws -> ResUnsafeAddFi
             
             let decoder = JSONDecoder()
             let result = try decoder.decode(ResUnsafeAddFile.self, from: data)
+            return result
+        }
+func bubbelApiGetDataChannelChunk(req: InGetDataChannelChunk) async throws -> ResGetDataChannelChunk {
+            let json = try req.jsonData()
+            
+            let url = URL(string: bubbelBathDev + "/api/get_data_channel_chunk")!
+            var urlRequest = URLRequest(url: url)
+            urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpMethod = "POST"
+            urlRequest.httpBody = json
+            
+            let (data, response) = try await URLSession.shared.data(for: urlRequest)
+            let (dataString) = String(data: data, encoding: .utf8) ?? ""
+            
+            let decoder = JSONDecoder()
+            let result = try decoder.decode(ResGetDataChannelChunk.self, from: data)
             return result
         }
