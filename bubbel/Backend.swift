@@ -58,10 +58,12 @@ struct BubbelCodegenOut: Codable {
     let t51: ResGetDataChannelChunk?
     let t52: InGetClubProfileWithName?
     let t53: ResGetClubProfileWithName?
-    let t54: DataChannelInitRequest?
-    let t55: DataChannelInitResponse?
-    let t56: DataChannelRequest?
-    let t57: DataChannelResponse?
+    let t54: InGetRandomUsers?
+    let t55: ResGetRandomUsers?
+    let t56: DataChannelInitRequest?
+    let t57: DataChannelInitResponse?
+    let t58: DataChannelRequest?
+    let t59: DataChannelResponse?
     let t6: InVerifyAccount?
     let t7: ResVerifyAccount?
     let t8: InSendVerify?
@@ -137,10 +139,12 @@ extension BubbelCodegenOut {
         t51: ResGetDataChannelChunk?? = nil,
         t52: InGetClubProfileWithName?? = nil,
         t53: ResGetClubProfileWithName?? = nil,
-        t54: DataChannelInitRequest?? = nil,
-        t55: DataChannelInitResponse?? = nil,
-        t56: DataChannelRequest?? = nil,
-        t57: DataChannelResponse?? = nil,
+        t54: InGetRandomUsers?? = nil,
+        t55: ResGetRandomUsers?? = nil,
+        t56: DataChannelInitRequest?? = nil,
+        t57: DataChannelInitResponse?? = nil,
+        t58: DataChannelRequest?? = nil,
+        t59: DataChannelResponse?? = nil,
         t6: InVerifyAccount?? = nil,
         t7: ResVerifyAccount?? = nil,
         t8: InSendVerify?? = nil,
@@ -201,6 +205,8 @@ extension BubbelCodegenOut {
             t55: t55 ?? self.t55,
             t56: t56 ?? self.t56,
             t57: t57 ?? self.t57,
+            t58: t58 ?? self.t58,
+            t59: t59 ?? self.t59,
             t6: t6 ?? self.t6,
             t7: t7 ?? self.t7,
             t8: t8 ?? self.t8,
@@ -4623,6 +4629,263 @@ extension GetClubProfileWithNameOut {
     }
 }
 
+// MARK: - InGetRandomUsers
+struct InGetRandomUsers: Codable {
+    let ignore: JSONNull?
+
+    enum CodingKeys: String, CodingKey {
+        case ignore = "_ignore"
+    }
+}
+
+// MARK: InGetRandomUsers convenience initializers and mutators
+
+extension InGetRandomUsers {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(InGetRandomUsers.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        ignore: JSONNull?? = nil
+    ) -> InGetRandomUsers {
+        return InGetRandomUsers(
+            ignore: ignore ?? self.ignore
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - ResGetRandomUsers
+struct ResGetRandomUsers: Codable {
+    let error: GetRandomUsersError?
+    let res: GetRandomUsersOut?
+}
+
+// MARK: ResGetRandomUsers convenience initializers and mutators
+
+extension ResGetRandomUsers {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(ResGetRandomUsers.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        error: GetRandomUsersError?? = nil,
+        res: GetRandomUsersOut?? = nil
+    ) -> ResGetRandomUsers {
+        return ResGetRandomUsers(
+            error: error ?? self.error,
+            res: res ?? self.res
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - GetRandomUsersError
+struct GetRandomUsersError: Codable {
+    let ierror: String
+    let type: GetClubMembersErrorType
+}
+
+// MARK: GetRandomUsersError convenience initializers and mutators
+
+extension GetRandomUsersError {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(GetRandomUsersError.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        ierror: String? = nil,
+        type: GetClubMembersErrorType? = nil
+    ) -> GetRandomUsersError {
+        return GetRandomUsersError(
+            ierror: ierror ?? self.ierror,
+            type: type ?? self.type
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - GetRandomUsersOut
+struct GetRandomUsersOut: Codable {
+    let users: [[User]]
+}
+
+// MARK: GetRandomUsersOut convenience initializers and mutators
+
+extension GetRandomUsersOut {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(GetRandomUsersOut.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        users: [[User]]? = nil
+    ) -> GetRandomUsersOut {
+        return GetRandomUsersOut(
+            users: users ?? self.users
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+enum User: Codable {
+    case integer(Int)
+    case userProfile(UserProfile)
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if let x = try? container.decode(Int.self) {
+            self = .integer(x)
+            return
+        }
+        if let x = try? container.decode(UserProfile.self) {
+            self = .userProfile(x)
+            return
+        }
+        throw DecodingError.typeMismatch(User.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for User"))
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        switch self {
+        case .integer(let x):
+            try container.encode(x)
+        case .userProfile(let x):
+            try container.encode(x)
+        }
+    }
+}
+
+// MARK: - UserProfile
+struct UserProfile: Codable {
+    let banner, description, displayName, name: String?
+    let pfp: String?
+    let userID: Int
+
+    enum CodingKeys: String, CodingKey {
+        case banner, description
+        case displayName = "display_name"
+        case name, pfp
+        case userID = "user_id"
+    }
+}
+
+// MARK: UserProfile convenience initializers and mutators
+
+extension UserProfile {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(UserProfile.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        banner: String?? = nil,
+        description: String?? = nil,
+        displayName: String?? = nil,
+        name: String?? = nil,
+        pfp: String?? = nil,
+        userID: Int? = nil
+    ) -> UserProfile {
+        return UserProfile(
+            banner: banner ?? self.banner,
+            description: description ?? self.description,
+            displayName: displayName ?? self.displayName,
+            name: name ?? self.name,
+            pfp: pfp ?? self.pfp,
+            userID: userID ?? self.userID
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
 // MARK: - DataChannelInitRequest
 struct DataChannelInitRequest: Codable {
     let channel: Int
@@ -5952,5 +6215,21 @@ func bubbelApiGetClubProfileWithName(req: InGetClubProfileWithName) async throws
             
             let decoder = JSONDecoder()
             let result = try decoder.decode(ResGetClubProfileWithName.self, from: data)
+            return result
+        }
+func bubbelApiGetRandomUsers(req: InGetRandomUsers) async throws -> ResGetRandomUsers {
+            let json = try req.jsonData()
+            
+            let url = URL(string: bubbelBathDev + "/api/get_random_users")!
+            var urlRequest = URLRequest(url: url)
+            urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpMethod = "POST"
+            urlRequest.httpBody = json
+            
+            let (data, response) = try await URLSession.shared.data(for: urlRequest)
+            let (dataString) = String(data: data, encoding: .utf8) ?? ""
+            
+            let decoder = JSONDecoder()
+            let result = try decoder.decode(ResGetRandomUsers.self, from: data)
             return result
         }
