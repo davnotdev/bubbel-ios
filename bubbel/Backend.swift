@@ -1208,6 +1208,7 @@ struct GetClubProfileOut: Codable {
     let banner: String?
     let dcID: Int
     let description, displayName: String?
+    let isMember: Bool?
     let name: String
     let owner: Int
     let pfp: String?
@@ -1217,6 +1218,7 @@ struct GetClubProfileOut: Codable {
         case dcID = "dc_id"
         case description
         case displayName = "display_name"
+        case isMember = "is_member"
         case name, owner, pfp
     }
 }
@@ -1244,6 +1246,7 @@ extension GetClubProfileOut {
         dcID: Int? = nil,
         description: String?? = nil,
         displayName: String?? = nil,
+        isMember: Bool?? = nil,
         name: String? = nil,
         owner: Int? = nil,
         pfp: String?? = nil
@@ -1253,6 +1256,7 @@ extension GetClubProfileOut {
             dcID: dcID ?? self.dcID,
             description: description ?? self.description,
             displayName: displayName ?? self.displayName,
+            isMember: isMember ?? self.isMember,
             name: name ?? self.name,
             owner: owner ?? self.owner,
             pfp: pfp ?? self.pfp
