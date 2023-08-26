@@ -363,7 +363,7 @@ extension CreateUserError {
 }
 
 enum PurpleType: String, Codable {
-    case emailOrUsernametaken = "EmailOrUsernametaken"
+    case emailOrUsernameTaken = "EmailOrUsernameTaken"
     case invalidEmail = "InvalidEmail"
     case invalidPassword = "InvalidPassword"
     case invalidPasswordCryto = "InvalidPasswordCryto"
