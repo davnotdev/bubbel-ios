@@ -3985,8 +3985,14 @@ extension ResUnsafeAddFile {
 
 // MARK: - UnsafeAddFileError
 struct UnsafeAddFileError: Codable {
-    let ierror: String
-    let type: GetClubMembersErrorType
+    let base64Error: String?
+    let type: BraggadociousType
+    let ierror: String?
+
+    enum CodingKeys: String, CodingKey {
+        case base64Error = "base64_error"
+        case type, ierror
+    }
 }
 
 // MARK: UnsafeAddFileError convenience initializers and mutators
@@ -4008,12 +4014,14 @@ extension UnsafeAddFileError {
     }
 
     func with(
-        ierror: String? = nil,
-        type: GetClubMembersErrorType? = nil
+        base64Error: String?? = nil,
+        type: BraggadociousType? = nil,
+        ierror: String?? = nil
     ) -> UnsafeAddFileError {
         return UnsafeAddFileError(
-            ierror: ierror ?? self.ierror,
-            type: type ?? self.type
+            base64Error: base64Error ?? self.base64Error,
+            type: type ?? self.type,
+            ierror: ierror ?? self.ierror
         )
     }
 
@@ -4024,6 +4032,11 @@ extension UnsafeAddFileError {
     func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
         return String(data: try self.jsonData(), encoding: encoding)
     }
+}
+
+enum BraggadociousType: String, Codable {
+    case invalidBase64 = "InvalidBase64"
+    case typeInternal = "Internal"
 }
 
 // MARK: - UnsafeAddFileOut
@@ -4209,7 +4222,7 @@ extension ResGetDataChannelChunk {
 
 // MARK: - GetDataChannelChunkError
 struct GetDataChannelChunkError: Codable {
-    let type: BraggadociousType
+    let type: Type1
     let ierror: String?
 }
 
@@ -4232,7 +4245,7 @@ extension GetDataChannelChunkError {
     }
 
     func with(
-        type: BraggadociousType? = nil,
+        type: Type1? = nil,
         ierror: String?? = nil
     ) -> GetDataChannelChunkError {
         return GetDataChannelChunkError(
@@ -4250,7 +4263,7 @@ extension GetDataChannelChunkError {
     }
 }
 
-enum BraggadociousType: String, Codable {
+enum Type1: String, Codable {
     case channelNotFound = "ChannelNotFound"
     case chunkNotFound = "ChunkNotFound"
     case noAuth = "NoAuth"
@@ -4528,7 +4541,7 @@ extension ResGetClubProfileWithName {
 
 // MARK: - GetClubProfileWithNameError
 struct GetClubProfileWithNameError: Codable {
-    let type: Type1
+    let type: Type2
     let ierror: String?
 }
 
@@ -4551,7 +4564,7 @@ extension GetClubProfileWithNameError {
     }
 
     func with(
-        type: Type1? = nil,
+        type: Type2? = nil,
         ierror: String?? = nil
     ) -> GetClubProfileWithNameError {
         return GetClubProfileWithNameError(
@@ -4569,7 +4582,7 @@ extension GetClubProfileWithNameError {
     }
 }
 
-enum Type1: String, Codable {
+enum Type2: String, Codable {
     case clubNotFound = "ClubNotFound"
     case typeInternal = "Internal"
 }
@@ -4985,7 +4998,7 @@ extension ResUsernameToID {
 
 // MARK: - UsernameToIDError
 struct UsernameToIDError: Codable {
-    let type: Type2
+    let type: Type3
     let ierror: String?
 }
 
@@ -5008,7 +5021,7 @@ extension UsernameToIDError {
     }
 
     func with(
-        type: Type2? = nil,
+        type: Type3? = nil,
         ierror: String?? = nil
     ) -> UsernameToIDError {
         return UsernameToIDError(
@@ -5026,7 +5039,7 @@ extension UsernameToIDError {
     }
 }
 
-enum Type2: String, Codable {
+enum Type3: String, Codable {
     case typeInternal = "Internal"
     case userNotFound = "UserNotFound"
 }
@@ -5168,7 +5181,7 @@ extension DataChannelInitResponse {
 
 // MARK: - DataChannelInitError
 struct DataChannelInitError: Codable {
-    let type: Type3
+    let type: Type4
     let ierror: String?
 }
 
@@ -5191,7 +5204,7 @@ extension DataChannelInitError {
     }
 
     func with(
-        type: Type3? = nil,
+        type: Type4? = nil,
         ierror: String?? = nil
     ) -> DataChannelInitError {
         return DataChannelInitError(
@@ -5209,7 +5222,7 @@ extension DataChannelInitError {
     }
 }
 
-enum Type3: String, Codable {
+enum Type4: String, Codable {
     case channelNotFound = "ChannelNotFound"
     case noAuth = "NoAuth"
     case typeInternal = "Internal"
@@ -5405,7 +5418,7 @@ extension DataChannelResponse {
 
 // MARK: - DataChannelError
 struct DataChannelError: Codable {
-    let type: Type4
+    let type: Type5
     let ierror: String?
 }
 
@@ -5428,7 +5441,7 @@ extension DataChannelError {
     }
 
     func with(
-        type: Type4? = nil,
+        type: Type5? = nil,
         ierror: String?? = nil
     ) -> DataChannelError {
         return DataChannelError(
@@ -5446,7 +5459,7 @@ extension DataChannelError {
     }
 }
 
-enum Type4: String, Codable {
+enum Type5: String, Codable {
     case channelNotFound = "ChannelNotFound"
     case chunkNotFound = "ChunkNotFound"
     case dataItemDeleted = "DataItemDeleted"
@@ -5457,13 +5470,13 @@ enum Type4: String, Codable {
 
 // MARK: - DataChannelResponseType
 struct DataChannelResponseType: Codable {
-    let chunk, index: Int
     let item: DataChannelItem?
     let type: ResType
+    let chunk, index: Int?
     let newItem: DataChannelItem?
 
     enum CodingKeys: String, CodingKey {
-        case chunk, index, item, type
+        case item, type, chunk, index
         case newItem = "new_item"
     }
 }
@@ -5487,17 +5500,17 @@ extension DataChannelResponseType {
     }
 
     func with(
-        chunk: Int? = nil,
-        index: Int? = nil,
         item: DataChannelItem?? = nil,
         type: ResType? = nil,
+        chunk: Int?? = nil,
+        index: Int?? = nil,
         newItem: DataChannelItem?? = nil
     ) -> DataChannelResponseType {
         return DataChannelResponseType(
-            chunk: chunk ?? self.chunk,
-            index: index ?? self.index,
             item: item ?? self.item,
             type: type ?? self.type,
+            chunk: chunk ?? self.chunk,
+            index: index ?? self.index,
             newItem: newItem ?? self.newItem
         )
     }
@@ -5563,7 +5576,7 @@ extension ResVerifyAccount {
 /// My favorite error message.
 // MARK: - VerifyAccountError
 struct VerifyAccountError: Codable {
-    let type: Type5
+    let type: Type6
     let ierror: String?
 }
 
@@ -5586,7 +5599,7 @@ extension VerifyAccountError {
     }
 
     func with(
-        type: Type5? = nil,
+        type: Type6? = nil,
         ierror: String?? = nil
     ) -> VerifyAccountError {
         return VerifyAccountError(
@@ -5604,7 +5617,7 @@ extension VerifyAccountError {
     }
 }
 
-enum Type5: String, Codable {
+enum Type6: String, Codable {
     case codeTimedOutOrAlreadyVerifiedOrInvalidCode = "CodeTimedOutOrAlreadyVerifiedOrInvalidCode"
     case typeInternal = "Internal"
 }
@@ -5699,7 +5712,7 @@ extension ResSendVerify {
 /// Failed to send the verification message (usually an email error).
 // MARK: - SendVerifyError
 struct SendVerifyError: Codable {
-    let type: Type6
+    let type: Type7
     let ierror: String?
 }
 
@@ -5722,7 +5735,7 @@ extension SendVerifyError {
     }
 
     func with(
-        type: Type6? = nil,
+        type: Type7? = nil,
         ierror: String?? = nil
     ) -> SendVerifyError {
         return SendVerifyError(
@@ -5740,7 +5753,7 @@ extension SendVerifyError {
     }
 }
 
-enum Type6: String, Codable {
+enum Type7: String, Codable {
     case resendTooSoon = "ResendTooSoon"
     case sendVerification = "SendVerification"
     case typeInternal = "Internal"
