@@ -5457,13 +5457,13 @@ enum Type4: String, Codable {
 
 // MARK: - DataChannelResponseType
 struct DataChannelResponseType: Codable {
+    let chunk, index: Int
     let item: DataChannelItem?
     let type: ResType
-    let chunk, index: Int?
     let newItem: DataChannelItem?
 
     enum CodingKeys: String, CodingKey {
-        case item, type, chunk, index
+        case chunk, index, item, type
         case newItem = "new_item"
     }
 }
@@ -5487,17 +5487,17 @@ extension DataChannelResponseType {
     }
 
     func with(
+        chunk: Int? = nil,
+        index: Int? = nil,
         item: DataChannelItem?? = nil,
         type: ResType? = nil,
-        chunk: Int?? = nil,
-        index: Int?? = nil,
         newItem: DataChannelItem?? = nil
     ) -> DataChannelResponseType {
         return DataChannelResponseType(
-            item: item ?? self.item,
-            type: type ?? self.type,
             chunk: chunk ?? self.chunk,
             index: index ?? self.index,
+            item: item ?? self.item,
+            type: type ?? self.type,
             newItem: newItem ?? self.newItem
         )
     }
