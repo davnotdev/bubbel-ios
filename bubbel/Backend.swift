@@ -78,10 +78,12 @@ struct BubbelCodegenOut: Codable {
     let t7: ResVerifyAccount?
     let t70: InUploadLooseBase64?
     let t71: ResUploadLooseBase64?
-    let t72: DataChannelInitRequest?
-    let t73: DataChannelInitResponse?
-    let t74: DataChannelRequest?
-    let t75: DataChannelResponse?
+    let t72: InResolveAndUpload?
+    let t73: ResResolveAndUpload?
+    let t74: DataChannelInitRequest?
+    let t75: DataChannelInitResponse?
+    let t76: DataChannelRequest?
+    let t77: DataChannelResponse?
     let t8: InSendVerify?
     let t9: ResSendVerify?
 }
@@ -175,10 +177,12 @@ extension BubbelCodegenOut {
         t7: ResVerifyAccount?? = nil,
         t70: InUploadLooseBase64?? = nil,
         t71: ResUploadLooseBase64?? = nil,
-        t72: DataChannelInitRequest?? = nil,
-        t73: DataChannelInitResponse?? = nil,
-        t74: DataChannelRequest?? = nil,
-        t75: DataChannelResponse?? = nil,
+        t72: InResolveAndUpload?? = nil,
+        t73: ResResolveAndUpload?? = nil,
+        t74: DataChannelInitRequest?? = nil,
+        t75: DataChannelInitResponse?? = nil,
+        t76: DataChannelRequest?? = nil,
+        t77: DataChannelResponse?? = nil,
         t8: InSendVerify?? = nil,
         t9: ResSendVerify?? = nil
     ) -> BubbelCodegenOut {
@@ -257,6 +261,8 @@ extension BubbelCodegenOut {
             t73: t73 ?? self.t73,
             t74: t74 ?? self.t74,
             t75: t75 ?? self.t75,
+            t76: t76 ?? self.t76,
+            t77: t77 ?? self.t77,
             t8: t8 ?? self.t8,
             t9: t9 ?? self.t9
         )
@@ -6523,6 +6529,200 @@ extension UploadLooseBase64Out {
     }
 }
 
+// MARK: - InResolveAndUpload
+struct InResolveAndUpload: Codable {
+    let token, url: String
+}
+
+// MARK: InResolveAndUpload convenience initializers and mutators
+
+extension InResolveAndUpload {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(InResolveAndUpload.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        token: String? = nil,
+        url: String? = nil
+    ) -> InResolveAndUpload {
+        return InResolveAndUpload(
+            token: token ?? self.token,
+            url: url ?? self.url
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - ResResolveAndUpload
+struct ResResolveAndUpload: Codable {
+    let error: ResolveAndUploadError?
+    let res: ResolveAndUploadOut?
+}
+
+// MARK: ResResolveAndUpload convenience initializers and mutators
+
+extension ResResolveAndUpload {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(ResResolveAndUpload.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        error: ResolveAndUploadError?? = nil,
+        res: ResolveAndUploadOut?? = nil
+    ) -> ResResolveAndUpload {
+        return ResResolveAndUpload(
+            error: error ?? self.error,
+            res: res ?? self.res
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - ResolveAndUploadError
+struct ResolveAndUploadError: Codable {
+    let fetchError: String?
+    let type: Type12
+    let fetchBytesError, ierror: String?
+
+    enum CodingKeys: String, CodingKey {
+        case fetchError = "fetch_error"
+        case type
+        case fetchBytesError = "fetch_bytes_error"
+        case ierror
+    }
+}
+
+// MARK: ResolveAndUploadError convenience initializers and mutators
+
+extension ResolveAndUploadError {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(ResolveAndUploadError.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        fetchError: String?? = nil,
+        type: Type12? = nil,
+        fetchBytesError: String?? = nil,
+        ierror: String?? = nil
+    ) -> ResolveAndUploadError {
+        return ResolveAndUploadError(
+            fetchError: fetchError ?? self.fetchError,
+            type: type ?? self.type,
+            fetchBytesError: fetchBytesError ?? self.fetchBytesError,
+            ierror: ierror ?? self.ierror
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+enum Type12: String, Codable {
+    case cannotGetURLFileName = "CannotGetUrlFileName"
+    case convertToBase64Failed = "ConvertToBase64Failed"
+    case dataConstraint = "DataConstraint"
+    case fetchBytesFailed = "FetchBytesFailed"
+    case fetchFailed = "FetchFailed"
+    case noAuth = "NoAuth"
+    case typeInternal = "Internal"
+}
+
+// MARK: - ResolveAndUploadOut
+struct ResolveAndUploadOut: Codable {
+    let objectName: String
+
+    enum CodingKeys: String, CodingKey {
+        case objectName = "object_name"
+    }
+}
+
+// MARK: ResolveAndUploadOut convenience initializers and mutators
+
+extension ResolveAndUploadOut {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(ResolveAndUploadOut.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        objectName: String? = nil
+    ) -> ResolveAndUploadOut {
+        return ResolveAndUploadOut(
+            objectName: objectName ?? self.objectName
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
 // MARK: - DataChannelInitRequest
 struct DataChannelInitRequest: Codable {
     let channel: Int
@@ -6616,7 +6816,7 @@ extension DataChannelInitResponse {
 
 // MARK: - DataChannelInitError
 struct DataChannelInitError: Codable {
-    let type: Type12
+    let type: Type13
     let ierror: String?
 }
 
@@ -6639,7 +6839,7 @@ extension DataChannelInitError {
     }
 
     func with(
-        type: Type12? = nil,
+        type: Type13? = nil,
         ierror: String?? = nil
     ) -> DataChannelInitError {
         return DataChannelInitError(
@@ -6657,7 +6857,7 @@ extension DataChannelInitError {
     }
 }
 
-enum Type12: String, Codable {
+enum Type13: String, Codable {
     case channelNotFound = "ChannelNotFound"
     case noAuth = "NoAuth"
     case typeInternal = "Internal"
@@ -6813,7 +7013,7 @@ extension DataChannelResponse {
 
 // MARK: - DataChannelError
 struct DataChannelError: Codable {
-    let type: Type13
+    let type: Type14
     let ierror: String?
 }
 
@@ -6836,7 +7036,7 @@ extension DataChannelError {
     }
 
     func with(
-        type: Type13? = nil,
+        type: Type14? = nil,
         ierror: String?? = nil
     ) -> DataChannelError {
         return DataChannelError(
@@ -6854,7 +7054,7 @@ extension DataChannelError {
     }
 }
 
-enum Type13: String, Codable {
+enum Type14: String, Codable {
     case channelNotFound = "ChannelNotFound"
     case chunkNotFound = "ChunkNotFound"
     case dataItemDeleted = "DataItemDeleted"
@@ -7015,7 +7215,7 @@ extension ResSendVerify {
 /// Failed to send the verification message (usually an email error).
 // MARK: - SendVerifyError
 struct SendVerifyError: Codable {
-    let type: Type14
+    let type: Type15
     let ierror: String?
 }
 
@@ -7038,7 +7238,7 @@ extension SendVerifyError {
     }
 
     func with(
-        type: Type14? = nil,
+        type: Type15? = nil,
         ierror: String?? = nil
     ) -> SendVerifyError {
         return SendVerifyError(
@@ -7056,7 +7256,7 @@ extension SendVerifyError {
     }
 }
 
-enum Type14: String, Codable {
+enum Type15: String, Codable {
     case resendTooSoon = "ResendTooSoon"
     case sendVerification = "SendVerification"
     case typeInternal = "Internal"
@@ -7897,5 +8097,21 @@ func bubbelApiUploadLooseBase64(req: InUploadLooseBase64) async throws -> ResUpl
             
             let decoder = JSONDecoder()
             let result = try decoder.decode(ResUploadLooseBase64.self, from: data)
+            return result
+        }
+func bubbelApiResolveAndUpload(req: InResolveAndUpload) async throws -> ResResolveAndUpload {
+            let json = try req.jsonData()
+            
+            let url = URL(string: bubbelBathDev + "/api/resolve_and_upload")!
+            var urlRequest = URLRequest(url: url)
+            urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpMethod = "POST"
+            urlRequest.httpBody = json
+            
+            let (data, response) = try await URLSession.shared.data(for: urlRequest)
+            let (dataString) = String(data: data, encoding: .utf8) ?? ""
+            
+            let decoder = JSONDecoder()
+            let result = try decoder.decode(ResResolveAndUpload.self, from: data)
             return result
         }
