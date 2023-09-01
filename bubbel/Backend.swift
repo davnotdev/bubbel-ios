@@ -76,10 +76,12 @@ struct BubbelCodegenOut: Codable {
     let t68: InUploadBase64?
     let t69: ResUploadBase64?
     let t7: ResVerifyAccount?
-    let t70: DataChannelInitRequest?
-    let t71: DataChannelInitResponse?
-    let t72: DataChannelRequest?
-    let t73: DataChannelResponse?
+    let t70: InUploadLooseBase64?
+    let t71: ResUploadLooseBase64?
+    let t72: DataChannelInitRequest?
+    let t73: DataChannelInitResponse?
+    let t74: DataChannelRequest?
+    let t75: DataChannelResponse?
     let t8: InSendVerify?
     let t9: ResSendVerify?
 }
@@ -171,10 +173,12 @@ extension BubbelCodegenOut {
         t68: InUploadBase64?? = nil,
         t69: ResUploadBase64?? = nil,
         t7: ResVerifyAccount?? = nil,
-        t70: DataChannelInitRequest?? = nil,
-        t71: DataChannelInitResponse?? = nil,
-        t72: DataChannelRequest?? = nil,
-        t73: DataChannelResponse?? = nil,
+        t70: InUploadLooseBase64?? = nil,
+        t71: ResUploadLooseBase64?? = nil,
+        t72: DataChannelInitRequest?? = nil,
+        t73: DataChannelInitResponse?? = nil,
+        t74: DataChannelRequest?? = nil,
+        t75: DataChannelResponse?? = nil,
         t8: InSendVerify?? = nil,
         t9: ResSendVerify?? = nil
     ) -> BubbelCodegenOut {
@@ -251,6 +255,8 @@ extension BubbelCodegenOut {
             t71: t71 ?? self.t71,
             t72: t72 ?? self.t72,
             t73: t73 ?? self.t73,
+            t74: t74 ?? self.t74,
+            t75: t75 ?? self.t75,
             t8: t8 ?? self.t8,
             t9: t9 ?? self.t9
         )
@@ -6187,7 +6193,8 @@ extension UploadBase64Error {
 }
 
 enum Type9: String, Codable {
-    case dataRejected = "DataRejected"
+    case dataConstraint = "DataConstraint"
+    case dataCorrupt = "DataCorrupt"
     case invalidBase64 = "InvalidBase64"
     case noAuth = "NoAuth"
     case typeInternal = "Internal"
@@ -6329,6 +6336,193 @@ enum Type10: String, Codable {
     case typeInternal = "Internal"
 }
 
+// MARK: - InUploadLooseBase64
+struct InUploadLooseBase64: Codable {
+    let data, fileName, token: String
+
+    enum CodingKeys: String, CodingKey {
+        case data
+        case fileName = "file_name"
+        case token
+    }
+}
+
+// MARK: InUploadLooseBase64 convenience initializers and mutators
+
+extension InUploadLooseBase64 {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(InUploadLooseBase64.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        data: String? = nil,
+        fileName: String? = nil,
+        token: String? = nil
+    ) -> InUploadLooseBase64 {
+        return InUploadLooseBase64(
+            data: data ?? self.data,
+            fileName: fileName ?? self.fileName,
+            token: token ?? self.token
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - ResUploadLooseBase64
+struct ResUploadLooseBase64: Codable {
+    let error: UploadLooseBase64Error?
+    let res: UploadLooseBase64Out?
+}
+
+// MARK: ResUploadLooseBase64 convenience initializers and mutators
+
+extension ResUploadLooseBase64 {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(ResUploadLooseBase64.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        error: UploadLooseBase64Error?? = nil,
+        res: UploadLooseBase64Out?? = nil
+    ) -> ResUploadLooseBase64 {
+        return ResUploadLooseBase64(
+            error: error ?? self.error,
+            res: res ?? self.res
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - UploadLooseBase64Error
+struct UploadLooseBase64Error: Codable {
+    let type: Type11
+    let ierror: String?
+}
+
+// MARK: UploadLooseBase64Error convenience initializers and mutators
+
+extension UploadLooseBase64Error {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(UploadLooseBase64Error.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        type: Type11? = nil,
+        ierror: String?? = nil
+    ) -> UploadLooseBase64Error {
+        return UploadLooseBase64Error(
+            type: type ?? self.type,
+            ierror: ierror ?? self.ierror
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+enum Type11: String, Codable {
+    case dataConstraint = "DataConstraint"
+    case invalidBase64 = "InvalidBase64"
+    case noAuth = "NoAuth"
+    case typeInternal = "Internal"
+}
+
+// MARK: - UploadLooseBase64Out
+struct UploadLooseBase64Out: Codable {
+    let objectName: String
+
+    enum CodingKeys: String, CodingKey {
+        case objectName = "object_name"
+    }
+}
+
+// MARK: UploadLooseBase64Out convenience initializers and mutators
+
+extension UploadLooseBase64Out {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(UploadLooseBase64Out.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        objectName: String? = nil
+    ) -> UploadLooseBase64Out {
+        return UploadLooseBase64Out(
+            objectName: objectName ?? self.objectName
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
 // MARK: - DataChannelInitRequest
 struct DataChannelInitRequest: Codable {
     let channel: Int
@@ -6422,7 +6616,7 @@ extension DataChannelInitResponse {
 
 // MARK: - DataChannelInitError
 struct DataChannelInitError: Codable {
-    let type: Type11
+    let type: Type12
     let ierror: String?
 }
 
@@ -6445,7 +6639,7 @@ extension DataChannelInitError {
     }
 
     func with(
-        type: Type11? = nil,
+        type: Type12? = nil,
         ierror: String?? = nil
     ) -> DataChannelInitError {
         return DataChannelInitError(
@@ -6463,7 +6657,7 @@ extension DataChannelInitError {
     }
 }
 
-enum Type11: String, Codable {
+enum Type12: String, Codable {
     case channelNotFound = "ChannelNotFound"
     case noAuth = "NoAuth"
     case typeInternal = "Internal"
@@ -6619,7 +6813,7 @@ extension DataChannelResponse {
 
 // MARK: - DataChannelError
 struct DataChannelError: Codable {
-    let type: Type12
+    let type: Type13
     let ierror: String?
 }
 
@@ -6642,7 +6836,7 @@ extension DataChannelError {
     }
 
     func with(
-        type: Type12? = nil,
+        type: Type13? = nil,
         ierror: String?? = nil
     ) -> DataChannelError {
         return DataChannelError(
@@ -6660,7 +6854,7 @@ extension DataChannelError {
     }
 }
 
-enum Type12: String, Codable {
+enum Type13: String, Codable {
     case channelNotFound = "ChannelNotFound"
     case chunkNotFound = "ChunkNotFound"
     case dataItemDeleted = "DataItemDeleted"
@@ -6821,7 +7015,7 @@ extension ResSendVerify {
 /// Failed to send the verification message (usually an email error).
 // MARK: - SendVerifyError
 struct SendVerifyError: Codable {
-    let type: Type13
+    let type: Type14
     let ierror: String?
 }
 
@@ -6844,7 +7038,7 @@ extension SendVerifyError {
     }
 
     func with(
-        type: Type13? = nil,
+        type: Type14? = nil,
         ierror: String?? = nil
     ) -> SendVerifyError {
         return SendVerifyError(
@@ -6862,7 +7056,7 @@ extension SendVerifyError {
     }
 }
 
-enum Type13: String, Codable {
+enum Type14: String, Codable {
     case resendTooSoon = "ResendTooSoon"
     case sendVerification = "SendVerification"
     case typeInternal = "Internal"
@@ -7687,5 +7881,21 @@ func bubbelApiUploadBase64(req: InUploadBase64) async throws -> ResUploadBase64 
             
             let decoder = JSONDecoder()
             let result = try decoder.decode(ResUploadBase64.self, from: data)
+            return result
+        }
+func bubbelApiUploadLooseBase64(req: InUploadLooseBase64) async throws -> ResUploadLooseBase64 {
+            let json = try req.jsonData()
+            
+            let url = URL(string: bubbelBathDev + "/api/upload_loose_base64")!
+            var urlRequest = URLRequest(url: url)
+            urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpMethod = "POST"
+            urlRequest.httpBody = json
+            
+            let (data, response) = try await URLSession.shared.data(for: urlRequest)
+            let (dataString) = String(data: data, encoding: .utf8) ?? ""
+            
+            let decoder = JSONDecoder()
+            let result = try decoder.decode(ResUploadLooseBase64.self, from: data)
             return result
         }
