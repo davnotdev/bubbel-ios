@@ -80,11 +80,17 @@ struct BubbelCodegenOut: Codable {
     let t71: ResUploadLooseBase64?
     let t72: InResolveAndUpload?
     let t73: ResResolveAndUpload?
-    let t74: DataChannelInitRequest?
-    let t75: DataChannelInitResponse?
-    let t76: DataChannelRequest?
-    let t77: DataChannelResponse?
+    let t74: InCreateMessageGroup?
+    let t75: ResCreateMessageGroup?
+    let t76: InAddUserToMessageGroup?
+    let t77: ResAddUserToMessageGroup?
+    let t78: InGetClubIDWithName?
+    let t79: ResGetClubIDWithName?
     let t8: InSendVerify?
+    let t80: DataChannelInitRequest?
+    let t81: DataChannelInitResponse?
+    let t82: DataChannelRequest?
+    let t83: DataChannelResponse?
     let t9: ResSendVerify?
 }
 
@@ -179,11 +185,17 @@ extension BubbelCodegenOut {
         t71: ResUploadLooseBase64?? = nil,
         t72: InResolveAndUpload?? = nil,
         t73: ResResolveAndUpload?? = nil,
-        t74: DataChannelInitRequest?? = nil,
-        t75: DataChannelInitResponse?? = nil,
-        t76: DataChannelRequest?? = nil,
-        t77: DataChannelResponse?? = nil,
+        t74: InCreateMessageGroup?? = nil,
+        t75: ResCreateMessageGroup?? = nil,
+        t76: InAddUserToMessageGroup?? = nil,
+        t77: ResAddUserToMessageGroup?? = nil,
+        t78: InGetClubIDWithName?? = nil,
+        t79: ResGetClubIDWithName?? = nil,
         t8: InSendVerify?? = nil,
+        t80: DataChannelInitRequest?? = nil,
+        t81: DataChannelInitResponse?? = nil,
+        t82: DataChannelRequest?? = nil,
+        t83: DataChannelResponse?? = nil,
         t9: ResSendVerify?? = nil
     ) -> BubbelCodegenOut {
         return BubbelCodegenOut(
@@ -263,7 +275,13 @@ extension BubbelCodegenOut {
             t75: t75 ?? self.t75,
             t76: t76 ?? self.t76,
             t77: t77 ?? self.t77,
+            t78: t78 ?? self.t78,
+            t79: t79 ?? self.t79,
             t8: t8 ?? self.t8,
+            t80: t80 ?? self.t80,
+            t81: t81 ?? self.t81,
+            t82: t82 ?? self.t82,
+            t83: t83 ?? self.t83,
             t9: t9 ?? self.t9
         )
     }
@@ -6158,7 +6176,14 @@ extension ResUploadBase64 {
 // MARK: - UploadBase64Error
 struct UploadBase64Error: Codable {
     let type: Type9
-    let ierror: String?
+    let dataCorruptError, dataConstraintError, ierror: String?
+
+    enum CodingKeys: String, CodingKey {
+        case type
+        case dataCorruptError = "data_corrupt_error"
+        case dataConstraintError = "data_constraint_error"
+        case ierror
+    }
 }
 
 // MARK: UploadBase64Error convenience initializers and mutators
@@ -6181,10 +6206,14 @@ extension UploadBase64Error {
 
     func with(
         type: Type9? = nil,
+        dataCorruptError: String?? = nil,
+        dataConstraintError: String?? = nil,
         ierror: String?? = nil
     ) -> UploadBase64Error {
         return UploadBase64Error(
             type: type ?? self.type,
+            dataCorruptError: dataCorruptError ?? self.dataCorruptError,
+            dataConstraintError: dataConstraintError ?? self.dataConstraintError,
             ierror: ierror ?? self.ierror
         )
     }
@@ -6438,7 +6467,13 @@ extension ResUploadLooseBase64 {
 // MARK: - UploadLooseBase64Error
 struct UploadLooseBase64Error: Codable {
     let type: Type11
-    let ierror: String?
+    let dataConstraintError, ierror: String?
+
+    enum CodingKeys: String, CodingKey {
+        case type
+        case dataConstraintError = "data_constraint_error"
+        case ierror
+    }
 }
 
 // MARK: UploadLooseBase64Error convenience initializers and mutators
@@ -6461,10 +6496,12 @@ extension UploadLooseBase64Error {
 
     func with(
         type: Type11? = nil,
+        dataConstraintError: String?? = nil,
         ierror: String?? = nil
     ) -> UploadLooseBase64Error {
         return UploadLooseBase64Error(
             type: type ?? self.type,
+            dataConstraintError: dataConstraintError ?? self.dataConstraintError,
             ierror: ierror ?? self.ierror
         )
     }
@@ -6618,12 +6655,13 @@ extension ResResolveAndUpload {
 struct ResolveAndUploadError: Codable {
     let fetchError: String?
     let type: Type12
-    let fetchBytesError, ierror: String?
+    let fetchBytesError, dataConstraintError, ierror: String?
 
     enum CodingKeys: String, CodingKey {
         case fetchError = "fetch_error"
         case type
         case fetchBytesError = "fetch_bytes_error"
+        case dataConstraintError = "data_constraint_error"
         case ierror
     }
 }
@@ -6650,12 +6688,14 @@ extension ResolveAndUploadError {
         fetchError: String?? = nil,
         type: Type12? = nil,
         fetchBytesError: String?? = nil,
+        dataConstraintError: String?? = nil,
         ierror: String?? = nil
     ) -> ResolveAndUploadError {
         return ResolveAndUploadError(
             fetchError: fetchError ?? self.fetchError,
             type: type ?? self.type,
             fetchBytesError: fetchBytesError ?? self.fetchBytesError,
+            dataConstraintError: dataConstraintError ?? self.dataConstraintError,
             ierror: ierror ?? self.ierror
         )
     }
@@ -6711,6 +6751,533 @@ extension ResolveAndUploadOut {
     ) -> ResolveAndUploadOut {
         return ResolveAndUploadOut(
             objectName: objectName ?? self.objectName
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - InCreateMessageGroup
+struct InCreateMessageGroup: Codable {
+    let token: String
+}
+
+// MARK: InCreateMessageGroup convenience initializers and mutators
+
+extension InCreateMessageGroup {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(InCreateMessageGroup.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        token: String? = nil
+    ) -> InCreateMessageGroup {
+        return InCreateMessageGroup(
+            token: token ?? self.token
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - ResCreateMessageGroup
+struct ResCreateMessageGroup: Codable {
+    let error: CreateMessageGroupError?
+    let res: CreateMessageGroupOut?
+}
+
+// MARK: ResCreateMessageGroup convenience initializers and mutators
+
+extension ResCreateMessageGroup {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(ResCreateMessageGroup.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        error: CreateMessageGroupError?? = nil,
+        res: CreateMessageGroupOut?? = nil
+    ) -> ResCreateMessageGroup {
+        return ResCreateMessageGroup(
+            error: error ?? self.error,
+            res: res ?? self.res
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - CreateMessageGroupError
+struct CreateMessageGroupError: Codable {
+    let type: FluffyType
+    let ierror: String?
+}
+
+// MARK: CreateMessageGroupError convenience initializers and mutators
+
+extension CreateMessageGroupError {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(CreateMessageGroupError.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        type: FluffyType? = nil,
+        ierror: String?? = nil
+    ) -> CreateMessageGroupError {
+        return CreateMessageGroupError(
+            type: type ?? self.type,
+            ierror: ierror ?? self.ierror
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - CreateMessageGroupOut
+struct CreateMessageGroupOut: Codable {
+    let messageGroupID: Int
+
+    enum CodingKeys: String, CodingKey {
+        case messageGroupID = "message_group_id"
+    }
+}
+
+// MARK: CreateMessageGroupOut convenience initializers and mutators
+
+extension CreateMessageGroupOut {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(CreateMessageGroupOut.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        messageGroupID: Int? = nil
+    ) -> CreateMessageGroupOut {
+        return CreateMessageGroupOut(
+            messageGroupID: messageGroupID ?? self.messageGroupID
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - InAddUserToMessageGroup
+struct InAddUserToMessageGroup: Codable {
+    let addUserID, messageGroupID: Int
+    let token: String
+
+    enum CodingKeys: String, CodingKey {
+        case addUserID = "add_user_id"
+        case messageGroupID = "message_group_id"
+        case token
+    }
+}
+
+// MARK: InAddUserToMessageGroup convenience initializers and mutators
+
+extension InAddUserToMessageGroup {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(InAddUserToMessageGroup.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        addUserID: Int? = nil,
+        messageGroupID: Int? = nil,
+        token: String? = nil
+    ) -> InAddUserToMessageGroup {
+        return InAddUserToMessageGroup(
+            addUserID: addUserID ?? self.addUserID,
+            messageGroupID: messageGroupID ?? self.messageGroupID,
+            token: token ?? self.token
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - ResAddUserToMessageGroup
+struct ResAddUserToMessageGroup: Codable {
+    let error: AddUserToMessageGroupError?
+    let res: [String: JSONAny]?
+}
+
+// MARK: ResAddUserToMessageGroup convenience initializers and mutators
+
+extension ResAddUserToMessageGroup {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(ResAddUserToMessageGroup.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        error: AddUserToMessageGroupError?? = nil,
+        res: [String: JSONAny]?? = nil
+    ) -> ResAddUserToMessageGroup {
+        return ResAddUserToMessageGroup(
+            error: error ?? self.error,
+            res: res ?? self.res
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - AddUserToMessageGroupError
+struct AddUserToMessageGroupError: Codable {
+    let type: Type13
+    let ierror: String?
+}
+
+// MARK: AddUserToMessageGroupError convenience initializers and mutators
+
+extension AddUserToMessageGroupError {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(AddUserToMessageGroupError.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        type: Type13? = nil,
+        ierror: String?? = nil
+    ) -> AddUserToMessageGroupError {
+        return AddUserToMessageGroupError(
+            type: type ?? self.type,
+            ierror: ierror ?? self.ierror
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+enum Type13: String, Codable {
+    case noAuth = "NoAuth"
+    case notGroupMember = "NotGroupMember"
+    case typeInternal = "Internal"
+}
+
+// MARK: - InGetClubIDWithName
+struct InGetClubIDWithName: Codable {
+    let name: String
+}
+
+// MARK: InGetClubIDWithName convenience initializers and mutators
+
+extension InGetClubIDWithName {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(InGetClubIDWithName.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        name: String? = nil
+    ) -> InGetClubIDWithName {
+        return InGetClubIDWithName(
+            name: name ?? self.name
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - ResGetClubIDWithName
+struct ResGetClubIDWithName: Codable {
+    let error: GetClubIDWithNameError?
+    let res: GetClubIDWithNameOut?
+}
+
+// MARK: ResGetClubIDWithName convenience initializers and mutators
+
+extension ResGetClubIDWithName {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(ResGetClubIDWithName.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        error: GetClubIDWithNameError?? = nil,
+        res: GetClubIDWithNameOut?? = nil
+    ) -> ResGetClubIDWithName {
+        return ResGetClubIDWithName(
+            error: error ?? self.error,
+            res: res ?? self.res
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - GetClubIDWithNameError
+struct GetClubIDWithNameError: Codable {
+    let type: Type2
+    let ierror: String?
+}
+
+// MARK: GetClubIDWithNameError convenience initializers and mutators
+
+extension GetClubIDWithNameError {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(GetClubIDWithNameError.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        type: Type2? = nil,
+        ierror: String?? = nil
+    ) -> GetClubIDWithNameError {
+        return GetClubIDWithNameError(
+            type: type ?? self.type,
+            ierror: ierror ?? self.ierror
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - GetClubIDWithNameOut
+struct GetClubIDWithNameOut: Codable {
+    let clubID: Int
+
+    enum CodingKeys: String, CodingKey {
+        case clubID = "club_id"
+    }
+}
+
+// MARK: GetClubIDWithNameOut convenience initializers and mutators
+
+extension GetClubIDWithNameOut {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(GetClubIDWithNameOut.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        clubID: Int? = nil
+    ) -> GetClubIDWithNameOut {
+        return GetClubIDWithNameOut(
+            clubID: clubID ?? self.clubID
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - InSendVerify
+struct InSendVerify: Codable {
+    let userID: Int
+
+    enum CodingKeys: String, CodingKey {
+        case userID = "user_id"
+    }
+}
+
+// MARK: InSendVerify convenience initializers and mutators
+
+extension InSendVerify {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(InSendVerify.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        userID: Int? = nil
+    ) -> InSendVerify {
+        return InSendVerify(
+            userID: userID ?? self.userID
         )
     }
 
@@ -6816,7 +7383,7 @@ extension DataChannelInitResponse {
 
 // MARK: - DataChannelInitError
 struct DataChannelInitError: Codable {
-    let type: Type13
+    let type: Type14
     let ierror: String?
 }
 
@@ -6839,7 +7406,7 @@ extension DataChannelInitError {
     }
 
     func with(
-        type: Type13? = nil,
+        type: Type14? = nil,
         ierror: String?? = nil
     ) -> DataChannelInitError {
         return DataChannelInitError(
@@ -6857,7 +7424,7 @@ extension DataChannelInitError {
     }
 }
 
-enum Type13: String, Codable {
+enum Type14: String, Codable {
     case channelNotFound = "ChannelNotFound"
     case noAuth = "NoAuth"
     case typeInternal = "Internal"
@@ -7013,7 +7580,7 @@ extension DataChannelResponse {
 
 // MARK: - DataChannelError
 struct DataChannelError: Codable {
-    let type: Type14
+    let type: Type15
     let ierror: String?
 }
 
@@ -7036,7 +7603,7 @@ extension DataChannelError {
     }
 
     func with(
-        type: Type14? = nil,
+        type: Type15? = nil,
         ierror: String?? = nil
     ) -> DataChannelError {
         return DataChannelError(
@@ -7054,7 +7621,7 @@ extension DataChannelError {
     }
 }
 
-enum Type14: String, Codable {
+enum Type15: String, Codable {
     case channelNotFound = "ChannelNotFound"
     case chunkNotFound = "ChunkNotFound"
     case dataItemDeleted = "DataItemDeleted"
@@ -7125,50 +7692,6 @@ enum ResType: String, Codable {
     case onNew = "OnNew"
 }
 
-// MARK: - InSendVerify
-struct InSendVerify: Codable {
-    let userID: Int
-
-    enum CodingKeys: String, CodingKey {
-        case userID = "user_id"
-    }
-}
-
-// MARK: InSendVerify convenience initializers and mutators
-
-extension InSendVerify {
-    init(data: Data) throws {
-        self = try newJSONDecoder().decode(InSendVerify.self, from: data)
-    }
-
-    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
-        guard let data = json.data(using: encoding) else {
-            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
-        }
-        try self.init(data: data)
-    }
-
-    init(fromURL url: URL) throws {
-        try self.init(data: try Data(contentsOf: url))
-    }
-
-    func with(
-        userID: Int? = nil
-    ) -> InSendVerify {
-        return InSendVerify(
-            userID: userID ?? self.userID
-        )
-    }
-
-    func jsonData() throws -> Data {
-        return try newJSONEncoder().encode(self)
-    }
-
-    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
-        return String(data: try self.jsonData(), encoding: encoding)
-    }
-}
-
 // MARK: - ResSendVerify
 struct ResSendVerify: Codable {
     let error: SendVerifyError?
@@ -7215,7 +7738,7 @@ extension ResSendVerify {
 /// Failed to send the verification message (usually an email error).
 // MARK: - SendVerifyError
 struct SendVerifyError: Codable {
-    let type: Type15
+    let type: Type16
     let ierror: String?
 }
 
@@ -7238,7 +7761,7 @@ extension SendVerifyError {
     }
 
     func with(
-        type: Type15? = nil,
+        type: Type16? = nil,
         ierror: String?? = nil
     ) -> SendVerifyError {
         return SendVerifyError(
@@ -7256,7 +7779,7 @@ extension SendVerifyError {
     }
 }
 
-enum Type15: String, Codable {
+enum Type16: String, Codable {
     case resendTooSoon = "ResendTooSoon"
     case sendVerification = "SendVerification"
     case typeInternal = "Internal"
@@ -8113,5 +8636,53 @@ func bubbelApiResolveAndUpload(req: InResolveAndUpload) async throws -> ResResol
             
             let decoder = JSONDecoder()
             let result = try decoder.decode(ResResolveAndUpload.self, from: data)
+            return result
+        }
+func bubbelApiCreateMessageGroup(req: InCreateMessageGroup) async throws -> ResCreateMessageGroup {
+            let json = try req.jsonData()
+            
+            let url = URL(string: bubbelBathDev + "/api/create_message_group")!
+            var urlRequest = URLRequest(url: url)
+            urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpMethod = "POST"
+            urlRequest.httpBody = json
+            
+            let (data, response) = try await URLSession.shared.data(for: urlRequest)
+            let (dataString) = String(data: data, encoding: .utf8) ?? ""
+            
+            let decoder = JSONDecoder()
+            let result = try decoder.decode(ResCreateMessageGroup.self, from: data)
+            return result
+        }
+func bubbelApiAddUserToMessageGroup(req: InAddUserToMessageGroup) async throws -> ResAddUserToMessageGroup {
+            let json = try req.jsonData()
+            
+            let url = URL(string: bubbelBathDev + "/api/add_user_to_message_group")!
+            var urlRequest = URLRequest(url: url)
+            urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpMethod = "POST"
+            urlRequest.httpBody = json
+            
+            let (data, response) = try await URLSession.shared.data(for: urlRequest)
+            let (dataString) = String(data: data, encoding: .utf8) ?? ""
+            
+            let decoder = JSONDecoder()
+            let result = try decoder.decode(ResAddUserToMessageGroup.self, from: data)
+            return result
+        }
+func bubbelApiGetClubIdWithName(req: InGetClubIdWithName) async throws -> ResGetClubIdWithName {
+            let json = try req.jsonData()
+            
+            let url = URL(string: bubbelBathDev + "/api/get_club_id_with_name")!
+            var urlRequest = URLRequest(url: url)
+            urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpMethod = "POST"
+            urlRequest.httpBody = json
+            
+            let (data, response) = try await URLSession.shared.data(for: urlRequest)
+            let (dataString) = String(data: data, encoding: .utf8) ?? ""
+            
+            let decoder = JSONDecoder()
+            let result = try decoder.decode(ResGetClubIdWithName.self, from: data)
             return result
         }
