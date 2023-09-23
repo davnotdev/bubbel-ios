@@ -6300,7 +6300,7 @@ extension UploadBase64Out {
 // MARK: - ResVerifyAccount
 struct ResVerifyAccount: Codable {
     let error: VerifyAccountError?
-    let res: JSONNull?
+    let res: VerifyAccountOut?
 }
 
 // MARK: ResVerifyAccount convenience initializers and mutators
@@ -6323,7 +6323,7 @@ extension ResVerifyAccount {
 
     func with(
         error: VerifyAccountError?? = nil,
-        res: JSONNull?? = nil
+        res: VerifyAccountOut?? = nil
     ) -> ResVerifyAccount {
         return ResVerifyAccount(
             error: error ?? self.error,
@@ -6387,6 +6387,47 @@ extension VerifyAccountError {
 enum Type10: String, Codable {
     case codeTimedOutOrAlreadyVerifiedOrInvalidCode = "CodeTimedOutOrAlreadyVerifiedOrInvalidCode"
     case typeInternal = "Internal"
+    case userNotFound = "UserNotFound"
+}
+
+// MARK: - VerifyAccountOut
+struct VerifyAccountOut: Codable {
+    let token: String?
+}
+
+// MARK: VerifyAccountOut convenience initializers and mutators
+
+extension VerifyAccountOut {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(VerifyAccountOut.self, from: data)
+    }
+
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+
+    func with(
+        token: String?? = nil
+    ) -> VerifyAccountOut {
+        return VerifyAccountOut(
+            token: token ?? self.token
+        )
+    }
+
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
 }
 
 // MARK: - InUploadLooseBase64
